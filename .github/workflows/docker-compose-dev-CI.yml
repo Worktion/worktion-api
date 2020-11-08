@@ -32,5 +32,5 @@ jobs:
     - name: Check containers running
       run: docker ps -a
     - name: Run test suit
-      run: docker-compose exec web python manage.py test
+      run: docker-compose logs
 
