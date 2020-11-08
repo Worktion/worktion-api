@@ -25,6 +25,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: Create .env.dev 
+      run: printenv | less > .env.dev
     - name: Build the docker-compose
       run: docker-compose up -d
     - name: Check containers running
