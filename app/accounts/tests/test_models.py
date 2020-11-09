@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 CustomUser = get_user_model()
 
 
-class TestModel(TestCase):
+class ModelCustomUserTestCase(TestCase):
     def test_create_user(self):
         user = CustomUser.objects.create_user(
             'worktion@gmail.com',
