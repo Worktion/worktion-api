@@ -9,10 +9,12 @@ class UserSerializer(serializers.ModelSerializer):
     first_name = serializers.CharField(max_length=100)
     last_name = serializers.CharField(max_length=100)
     username = serializers.CharField(max_length=100)
+    id = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = User
         fields = [
+            'id',
             'first_name',
             'last_name',
             'username',
