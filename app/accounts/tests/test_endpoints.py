@@ -8,7 +8,7 @@ User = get_user_model()
 
 class AccountTestCase(APITestCase):
     def setUp(self):
-        user = User.objects.create_user(
+        User.objects.create_user(
             'test@a.com',
             '12345678',
             'test',
@@ -25,7 +25,7 @@ class AccountTestCase(APITestCase):
             "email": "test2@a.com",
             "password": "12345678"
         }
-        response = self.client.post(url,data, format='json')
+        response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(User.objects.count(), 2)
         self.assertEqual(User.objects.get(username='test2').email, 'test2@a.com')
@@ -36,19 +36,18 @@ class AccountTestCase(APITestCase):
             "email": "test@a.com",
             "password": "12345678"
         }
-        response = self.client.post(url,data, format='json')
+        response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_token_refresh(self):
         url = reverse('token_obtain_pair')
-        urlRefresh = reverse('token_refresh')
+        reverse('token_refresh')
         data = {
             "email": "test@a.com",
             "password": "12345678"
         }
-        response = self.client.post(url,data, format='json')
+        response = self.client.post(url, data, format='json')
         data = {
             "refresh": response.data['refresh'],
         }
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-    

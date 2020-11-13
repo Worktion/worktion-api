@@ -119,7 +119,7 @@ AUTH_USER_MODEL = 'accounts.CustomUser'
 
 # Configuration of REST FRAMEWORK
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES':[
+    'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -156,8 +156,8 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
 
-#Cors configuration 
-CORS_ORIGIN_ALLOW_ALL=True
+# Cors configuration
+CORS_ORIGIN_ALLOW_ALL = True
 
 CORS_ORIGIN_WHITELIST = [
     'http://localhost:3000',

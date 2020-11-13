@@ -32,4 +32,3 @@ class ModelCustomUserTestCase(TestCase):
         self.assertTrue(user.is_active)
         self.assertTrue(user.is_staff)
         self.assertTrue(user.is_superuser)
-

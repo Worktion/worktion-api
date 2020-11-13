@@ -10,7 +10,7 @@ class CustomUserManager(BaseUserManager):
             raise ValueError(_('The email must be set'))
         email = self.normalize_email(email)
         user = self.model(
-            email=email, 
+            email=email,
             first_name=first_name,
             last_name=last_name,
             username=username,
@@ -21,7 +21,7 @@ class CustomUserManager(BaseUserManager):
         return user
 
     def create_superuser(self, email, password, first_name, last_name, username, **extra_fields):
-        extra_fields.setdefault('is_staff',True)
+        extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('is_active', True)
 
@@ -45,8 +45,6 @@ class CustomUser(AbstractUser):
     cover = models.ImageField(upload_to='users-cover', null=True, blank=True)
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['first_name','last_name','username']
+    REQUIRED_FIELDS = ['first_name', 'last_name', 'username']
 
     objects = CustomUserManager()
-
-
