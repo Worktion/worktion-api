@@ -14,7 +14,7 @@ class AccountTestCase(APITestCase):
             'test',
             'test',
             'test'
-            )
+        )
 
     def test_registration_account(self):
         url = reverse('registration_account')
