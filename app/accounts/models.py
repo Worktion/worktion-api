@@ -33,6 +33,7 @@ class CustomUserManager(BaseUserManager):
 
 
 class CustomUser(AbstractUser):
+    """ Custum user model """
     email = models.EmailField(
         _('email address'),
         max_length=255,

@@ -1,5 +1,6 @@
-from rest_framework import serializers
+""" Imports """
 from django.contrib.auth import get_user_model
+from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
 User = get_user_model()
@@ -28,12 +29,6 @@ class UserSerializer(serializers.ModelSerializer):
             'password',
         ]
 
-    def validate(self, attrs):
-        if User.objects.filter(username=attrs['username']):
-            raise serializers.ValidationError('username already exist')
-
-        return super().validate(attrs)
-
     def create(self, validated_data):
         user = User.objects.create_user(
             email=validated_data['email'],
@@ -43,3 +38,20 @@ class UserSerializer(serializers.ModelSerializer):
             username=validated_data['username'],
         )
         return user
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    """ Serializer to the User Profile """
+
+    class Meta:
+        model = User
+        fields = [
+            'id',
+            'email',
+            'username',
+            'first_name',
+            'last_name',
+            'bio',
+            'birth_date',
+            'cover',
+        ]
