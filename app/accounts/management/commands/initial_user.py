@@ -5,9 +5,13 @@ CustomUser = get_user_model()
 
 
 class Command(BaseCommand):
-    help = 'Displays current time'
+    help = 'Crea un super usuario'
 
     def handle(self, *args, **kwargs):
+        """
+        Comando que ayuda a crear un super usuario cuando
+        se levanta el docker-compose de desarrollo
+        """
         print("Creating superuser ...")
         user = CustomUser.objects.create_superuser(
             'worktion@gmail.com',
