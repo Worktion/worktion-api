@@ -9,7 +9,11 @@ class ExerciseImageSerializer(serializers.ModelSerializer):
 
 
 class ExerciseSerializer(serializers.HyperlinkedModelSerializer):
-    images = ExerciseImageSerializer(source='exercise_images', many=True, read_only=True)
+    images = ExerciseImageSerializer(
+        source='exercise_images',
+        many=True,
+        read_only=True,
+    )
 
     class Meta:
         model = Exercise
