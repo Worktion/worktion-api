@@ -2,6 +2,7 @@ from django.db import models
 
 
 class Exercise(models.Model):
+    """ Model exercise """
     DIFFICULTIES = (
         ('novice', 'Novice'),
         ('beginner', 'Beginner'),
@@ -16,5 +17,6 @@ class Exercise(models.Model):
 
 
 class ExerciseImage(models.Model):
+    """ Model for the exercise images """
     exercise = models.ForeignKey(Exercise, related_name='exercise_images', on_delete=models.CASCADE)
     image = models.ImageField(upload_to="exercise-images")
