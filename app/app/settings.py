@@ -158,11 +158,12 @@ SIMPLE_JWT = {
 }
 
 # Cors configuration
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000/',
-    'https://localhost:3000',
-    'http://127.0.0.1:3000/',
-]
+CORS_ALLOW_ALL_ORIGINS = True
+# CORS_ALLOWED_ORIGINS = [
+#     'http://localhost:3000',
+#     'http://127.0.0.1:3000',
+#     'http://127.0.0.1:1337',
+# ]
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
