@@ -24,7 +24,7 @@ class ExecutionBlockSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ExecutionBlock
-        fields = ['id', 'name', 'exercises']
+        fields = ['id', 'name', 'quantity', 'exercises']
 
 
 class RoutineSerializer(serializers.ModelSerializer):
