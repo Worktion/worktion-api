@@ -46,6 +46,7 @@ class ExecutionBlock(models.Model):
         on_delete=models.CASCADE
     )
     name = models.CharField(max_length=50)
+    quantity = models.IntegerField(default=1)
 
 
 class ExecutionExercise(models.Model):
