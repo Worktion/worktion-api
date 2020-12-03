@@ -35,7 +35,7 @@ class Routine(models.Model):
     updated = models.DateTimeField(auto_now=True)
     dificulty = models.CharField(max_length=15, choices=DIFFICULTIES)
     muscle_group = models.CharField(max_length=10, choices=MUSCLE_GROUPS)
-    cover = models.ImageField(upload_to='routine-images')
+    cover = models.ImageField(upload_to='routine-images', null=True, blank=True)
 
 
 class ExecutionBlock(models.Model):
