@@ -1,6 +1,7 @@
 from rest_framework import viewsets
+from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated, BasePermission
-from .serializers import RoutineSerializer
+from .serializers import RoutineSerializer, OnlyRoutineSerializer
 from .models import Routine
 
 
@@ -13,8 +14,19 @@ class IsOwner(BasePermission):
         return obj.user.id == request.user.id
 
 
-class RoutineViewSet(viewsets.ModelViewSet):
-    """ ViewSet of Routines """
+class RoutineList(generics.ListCreateAPIView):
+    """ ListView of Routines """
+    queryset = Routine.objects.all()
+    serializer_class = OnlyRoutineSerializer
+    permission_classes = [IsAuthenticated, IsOwner]
+
+    def get_queryset(self):
+        user = self.request.user
+        return Routine.objects.filter(user=user)
+
+
+class RoutineDetail(generics.RetrieveUpdateDestroyAPIView):
+    """ Detail of Routine """
     queryset = Routine.objects.all()
     serializer_class = RoutineSerializer
     permission_classes = [IsAuthenticated, IsOwner]
@@ -22,3 +34,5 @@ class RoutineViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
         return Routine.objects.filter(user=user)
+
+
