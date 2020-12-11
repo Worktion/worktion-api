@@ -1,6 +1,7 @@
 from rest_framework import viewsets, permissions
 from .models import Exercise
 from .serializers import ExerciseSerializer
+from rest_framework import filters
 
 
 class IsAdminUserOrReadOnly(permissions.IsAdminUser):
@@ -26,3 +27,5 @@ class ExerciseViewSet(viewsets.ModelViewSet):
         permissions.IsAuthenticated,
         IsAdminUserOrReadOnly
     ]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['name', 'similar_names']
