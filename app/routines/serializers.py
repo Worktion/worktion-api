@@ -7,6 +7,7 @@ from exercises.models import Exercise
 class ExecutionExerciseSerializer(serializers.ModelSerializer):
     exercise = ExerciseSerializer(read_only=True)
     exercise_id = serializers.IntegerField(write_only=True)
+
     class Meta:
         model = ExecutionExercise
         fields = [
