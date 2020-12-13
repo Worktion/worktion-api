@@ -55,3 +55,16 @@ class ProfileSerializer(serializers.ModelSerializer):
             'birth_date',
             'cover',
         ]
+
+
+class PublicProfileSerializer(serializers.ModelSerializer):
+    """ Serializer to the User Profile for public users """
+
+    class Meta:
+        model = User
+        fields = [
+            'id',
+            'email',
+            'username',
+            'cover',
+        ]
