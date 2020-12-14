@@ -2,6 +2,7 @@ from django.urls import path
 from .views import (
     ShareRoutineUserList,
     ShareRoutineUserDetail,
+    ShareRoutinePublicCreate,
     ShareRoutinePublicDetail,
 )
 
@@ -15,6 +16,11 @@ urlpatterns = [
         'share/routines/<int:pk>/',
         ShareRoutineUserDetail.as_view(),
         name='share_routine-detail'
+    ),
+    path(
+        'share/public/',
+        ShareRoutinePublicCreate.as_view(),
+        name='share_public-create'
     ),
     path(
         'share/public/<uuid:pk>/',

@@ -83,6 +83,7 @@ class ShareRoutinePublicSerializer(serializers.ModelSerializer):
     owner = PublicProfileSerializer(
         read_only=True,
     )
+    routine_id = serializers.IntegerField(write_only=True)
 
     class Meta:
         model = ShareRoutinePublic
@@ -90,4 +91,28 @@ class ShareRoutinePublicSerializer(serializers.ModelSerializer):
             'routine',
             'owner',
             'id',
+            'routine_id',
         ]
+
+    def validate(self, data):
+        _routine = data['routine_id']
+        if not Routine.objects.filter(id=_routine).exists():
+            raise serializers.ValidationError({"routine_id": "Routine not found"})
+        _owner = self.context['request'].user
+        if _owner.id != Routine.objects.get(id=_routine).user.id:
+            raise serializers.ValidationError({
+                "Permissions": "Yo don't have permission for this routine"
+            })
+
+        return data
+
+    def create(self, validated_data):
+        _owner = self.context['request'].user
+        _routine = Routine.objects.get(
+            id=validated_data.get('routine_id'),
+        )
+        share = ShareRoutinePublic.objects.create(
+            routine=_routine,
+            owner=_owner,
+        )
+        return share
