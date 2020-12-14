@@ -118,3 +118,18 @@ class OnlyRoutineSerializer(serializers.HyperlinkedModelSerializer):
                     typeExecution=exercise.get('typeExecution'),
                 )
         return _routine
+
+
+class OnlyRoutineShareSerializer(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+        model = Routine
+        fields = [
+            'id',
+            'name',
+            'description',
+            'time',
+            'dificulty',
+            'muscle_group',
+            'cover',
+        ]

@@ -1,6 +1,6 @@
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated, BasePermission, IsAuthenticatedOrReadOnly
-from .serializers import(
+from .serializers import (
     ShareRoutineUserSerializer,
     ShareRoutinePublicSerializer,
     ShareRoutineUserDetailSerializer,
@@ -26,11 +26,11 @@ class IsOwner(BasePermission):
         return obj.owner.id == request.user.id
 
 
-class ShareRoutineUserList(generics.ListAPIView):
+class ShareRoutineUserList(generics.ListCreateAPIView):
     """ ListView for Routines shared """
     queryset = ShareRoutineUser.objects.all()
     serializer_class = ShareRoutineUserSerializer
-    permission_classes = [IsAuthenticated, IsOccupant | IsAuthenticated, IsOwner]
+    permission_classes = [IsAuthenticated, IsOwner | IsAuthenticated, IsOccupant]
 
     def get_queryset(self):
         user = self.request.user
