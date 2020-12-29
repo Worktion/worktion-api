@@ -4,6 +4,9 @@ from .views import (
     ShareRoutineUserDetail,
     ShareRoutinePublicCreate,
     ShareRoutinePublicDetail,
+    ShareRoutineUserOccupantList,
+    ShareRoutineUserOccupantDelete,
+    ShareRoutinePublicRetrieve,
 )
 
 urlpatterns = [
@@ -18,6 +21,16 @@ urlpatterns = [
         name='share_routine-detail'
     ),
     path(
+        'share/routines/<int:pk>/occupants/',
+        ShareRoutineUserOccupantList.as_view(),
+        name='share_routine_occupants-list'
+    ),
+    path(
+        'share/routines/<int:pk>/occupants/<int:occupant>/',
+        ShareRoutineUserOccupantDelete.as_view(),
+        name='share_routine_occupants-list'
+    ),
+    path(
         'share/public/',
         ShareRoutinePublicCreate.as_view(),
         name='share_public-create'
@@ -27,5 +40,11 @@ urlpatterns = [
         ShareRoutinePublicDetail.as_view(),
         name='share_public-detail'
     ),
+    path(
+        'share/public/routine/<int:pk>/',
+        ShareRoutinePublicRetrieve.as_view(),
+        name='share_public-detail'
+    ),
+
 
 ]
