@@ -25,11 +25,11 @@ class ShareRoutineUserSerializer(serializers.ModelSerializer):
             'occupant_email',
         ]
 
-    def validate(self, data):
-        _email = data['occupant_email']
+    def validate(self, attrs):
+        _email = attrs['occupant_email']
         if not User.objects.filter(email=_email).exists():
             raise serializers.ValidationError({"occupant_email": "User not found"})
-        _routine = data['routine_id']
+        _routine = attrs['routine_id']
         if not Routine.objects.filter(id=_routine).exists():
             raise serializers.ValidationError({"routine_id": "Routine not found"})
         _owner = self.context['request'].user
@@ -38,7 +38,7 @@ class ShareRoutineUserSerializer(serializers.ModelSerializer):
                 "Permissions": "Yo don't have permission for this routine"
             })
 
-        return data
+        return attrs
 
     def create(self, validated_data):
         _owner = self.context['request'].user
@@ -71,6 +71,18 @@ class ShareRoutineUserDetailSerializer(serializers.ModelSerializer):
             'id',
             'routine',
             'owner',
+            'occupant',
+        ]
+
+
+class ShareRoutineUserOccupantSerializer(serializers.ModelSerializer):
+    """ Serializer to occupants of a routine """
+    occupant = PublicProfileSerializer(read_only=True)
+
+    class Meta:
+        model = ShareRoutineUser
+        fields = [
+            'id',
             'occupant',
         ]
 
