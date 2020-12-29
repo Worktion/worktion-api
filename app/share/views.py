@@ -96,3 +96,20 @@ class ShareRoutinePublicDetail(generics.RetrieveDestroyAPIView):
     queryset = ShareRoutinePublic.objects.all()
     serializer_class = ShareRoutinePublicSerializer
     permission_classes = [ReadOnly | IsOwner]
+
+
+class ShareRoutinePublicRetrieve(generics.RetrieveDestroyAPIView):
+    """ View to see the public routine """
+    queryset = ShareRoutinePublic.objects.all()
+    serializer_class = ShareRoutinePublicSerializer
+    permission_classes = [IsAuthenticated, IsOwner]
+
+    def retrieve(self, request, *args, **kwargs):
+        exist = ShareRoutinePublic.objects.filter(
+            routine=self.kwargs['pk']
+        ).exists()
+        if not exist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        instance = ShareRoutinePublic.objects.get(routine=self.kwargs['pk'])
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
