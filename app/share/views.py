@@ -49,7 +49,7 @@ class ShareRoutineUserDetail(generics.RetrieveDestroyAPIView):
     """ ListView for the deatil of a Routine shared """
     queryset = ShareRoutineUser.objects.all()
     serializer_class = ShareRoutineUserDetailSerializer
-    permission_classes = [IsAuthenticated, IsOccupant | IsAuthenticated, IsOwner]
+    permission_classes = [IsOccupant | IsOwner]
 
 
 class ShareRoutineUserOccupantList(generics.ListAPIView):
