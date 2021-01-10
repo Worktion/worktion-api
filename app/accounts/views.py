@@ -1,8 +1,12 @@
 """ Imports """
 from django.contrib.auth import get_user_model
 from rest_framework.permissions import IsAuthenticated
-from rest_framework import generics
-from .serializers import (UserSerializer, ProfileSerializer)
+from rest_framework import generics, viewsets, filters
+from .serializers import (
+    UserSerializer,
+    ProfileSerializer,
+    PublicProfileSerializer
+)
 from .permissions import IsOwnerOrReadOnly
 User = get_user_model()
 
@@ -25,3 +29,12 @@ class UserProfile(generics.RetrieveUpdateAPIView):
     queryset = User.objects.all()
     serializer_class = ProfileSerializer
     permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
+
+
+class UserProfileSearch(viewsets.ModelViewSet):
+    """ View to search users"""
+    queryset = User.objects.all()
+    serializer_class = PublicProfileSerializer
+    permission_classes = [IsAuthenticated]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['email', 'username']
