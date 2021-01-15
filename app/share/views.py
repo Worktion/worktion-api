@@ -71,14 +71,14 @@ class ShareRoutineUserOccupantDelete(generics.DestroyAPIView):
     def destroy(self, request, *args, **kwargs):
         exist = ShareRoutineUser.objects.filter(
             routine=self.kwargs['pk'],
-            occupant=self.kwargs['occupant']
+            id=self.kwargs['occupant']
         ).exists()
         if not exist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         instance = ShareRoutineUser.objects.get(
             routine=self.kwargs['pk'],
-            occupant=self.kwargs['occupant']
+            id=self.kwargs['occupant']
         )
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
