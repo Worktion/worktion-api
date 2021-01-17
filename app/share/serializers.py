@@ -37,7 +37,10 @@ class ShareRoutineUserSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({
                 "Permissions": "Yo don't have permission for this routine"
             })
-
+        if routine_already_shared_User(_routine, _email):
+            raise serializers.ValidationError({
+                "occupant": "Routine already shared to User"
+            })
         return attrs
 
     def create(self, validated_data):
@@ -54,6 +57,15 @@ class ShareRoutineUserSerializer(serializers.ModelSerializer):
             occupant=_occupant,
         )
         return share
+
+
+def routine_already_shared_User(idRoutine, userEmail):
+    _occupant = User.objects.get(email=userEmail)
+    exist = ShareRoutineUser.objects.filter(
+        routine=idRoutine,
+        occupant=_occupant
+    ).exists()
+    return exist
 
 
 class ShareRoutineUserDetailSerializer(serializers.ModelSerializer):
