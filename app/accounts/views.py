@@ -5,10 +5,17 @@ from rest_framework import generics, viewsets, filters
 from .serializers import (
     UserSerializer,
     ProfileSerializer,
-    PublicProfileSerializer
+    PublicProfileSerializer,
+    LoginSerializer,
 )
 from .permissions import IsOwnerOrReadOnly
 User = get_user_model()
+
+
+class LoginView(generics.CreateAPIView):
+    """ View to get access to system """
+    queryset = User.objects.all()
+    serializer_class = LoginSerializer
 
 
 class RegisterUser(generics.CreateAPIView):

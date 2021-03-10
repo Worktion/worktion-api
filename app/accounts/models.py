@@ -1,7 +1,9 @@
 from django.db import models
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
+from django.contrib.auth import authenticate
 from django.utils.translation import ugettext_lazy as _
+from rest_framework_simplejwt.tokens import RefreshToken
 
 
 class CustomUserManager(BaseUserManager):
@@ -43,8 +45,32 @@ class CustomUser(AbstractUser):
     bio = models.TextField(_('user biography'), blank=True, null=True)
     birth_date = models.DateField(_('user birthday'), blank=True, null=True)
     cover = models.ImageField(upload_to='users-cover', null=True, blank=True)
+    email_verified = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name', 'username']
 
     objects = CustomUserManager()
+
+    @classmethod
+    def login(self, email, password):
+        """ Method to get access to the system """
+        if not email:
+            raise ValueError('The email must be set')
+        if not password:
+            raise ValueError('The password must be set')
+        exist_email = CustomUser.objects.filter(email=email).exists()
+        if not exist_email:
+            raise ValueError('email not found')
+        user = authenticate(email=email, password=password)
+        if user is not None:
+            refresh = RefreshToken.for_user(user)
+            if not user.email_verified:
+                raise ValueError(_('email has not yet been verified'))
+            return {
+                'email_verified': user.email_verified,
+                'refresh': str(refresh),
+                'access': str(refresh.access_token),
+            }
+        else:
+            raise ValueError('User or password incorrect')
