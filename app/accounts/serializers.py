@@ -20,7 +20,7 @@ class LoginSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         try:
-            user_tokens = User.login(
+            user_tokens = User.objects.login(
                 validated_data['email'],
                 validated_data['password']
             )

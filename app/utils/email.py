@@ -1,6 +1,12 @@
+"""
+Author: Victor Manuel Niño Martínez
+Creation: 12/03/2021
+Last update: 13/03/2021
+"""
+from smtplib import SMTPException
 from django.core.mail import send_mail
-from app.settings import EMAIL_HOST_USER
 from django.template import loader
+from app.settings import EMAIL_HOST_USER
 
 CONFIRMATION_EMAIL_MESSAGE = "Confirmación de correo electrónico"
 
@@ -17,6 +23,7 @@ class Email:
 
     @classmethod
     def send_confirmation_register(cls, user, token):
+        """ Public method to send a confirmation email """
         subject = CONFIRMATION_EMAIL_MESSAGE
         message = ""
         message_html = loader.render_to_string(
@@ -33,11 +40,15 @@ class Email:
             raise ex
 
     def send_mail(self):
-        send_mail(
-            subject=self.subject,
-            message=self.message,
-            from_email=self.email_host,
-            recipient_list=self.client,
-            fail_silently=False,
-            html_message=self.custom_html_message,
-        )
+        """ Method that send the email """
+        try:
+            send_mail(
+                subject=self.subject,
+                message=self.message,
+                from_email=self.email_host,
+                recipient_list=self.client,
+                fail_silently=False,
+                html_message=self.custom_html_message,
+            )
+        except SMTPException as ex:
+            raise Exception from ex

@@ -1,4 +1,9 @@
+""""
+Author: Victor Manuel Niño Martínez
+Last update: 13/03/2021
+"""
 import uuid
+from datetime import timedelta
 from django.db import models
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
@@ -6,11 +11,11 @@ from django.contrib.auth import authenticate
 from django.utils.translation import ugettext_lazy as _
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 from utils.email import Email
-from datetime import timedelta
 
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password, first_name, last_name, username, **extra_fields):
+        """ Method to create a user """
         if not email:
             raise ValueError(_('The email must be set'))
         email = self.normalize_email(email)
@@ -27,6 +32,7 @@ class CustomUserManager(BaseUserManager):
         return user
 
     def create_superuser(self, email, password, first_name, last_name, username, **extra_fields):
+        """ Method to create a super user for the system """
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('is_active', True)
@@ -36,6 +42,30 @@ class CustomUserManager(BaseUserManager):
         if extra_fields.get('is_superuser') is not True:
             raise ValueError(_('Superuser must have is_superuser=True'))
         return self.create_user(email, password, first_name, last_name, username, **extra_fields)
+
+    def login(self, email, password):
+        """ Method to get access to the system """
+        if not email:
+            raise ValueError('The email must be set')
+        if not password:
+            raise ValueError('The password must be set')
+        exist_email = CustomUser.objects.filter(email=email).exists()
+        if not exist_email:
+            raise ValueError('email not found')
+        user = authenticate(email=email, password=password)
+        if user is not None:
+            refresh = RefreshToken.for_user(user)
+            new_access_token = refresh.access_token
+            new_access_token.set_exp(lifetime=timedelta(seconds=30))
+            if not user.email_verified:
+                raise ValueError(_('email has not yet been verified'))
+            return {
+                'email_verified': user.email_verified,
+                'refresh': str(refresh),
+                'access': str(new_access_token),
+            }
+        else:
+            raise ValueError('User or password incorrect')
 
 
 class CustomUser(AbstractUser):
@@ -57,40 +87,14 @@ class CustomUser(AbstractUser):
 
     objects = CustomUserManager()
 
-    @classmethod
-    def login(cls, email, password):
-        """ Method to get access to the system """
-        if not email:
-            raise ValueError('The email must be set')
-        if not password:
-            raise ValueError('The password must be set')
-        exist_email = CustomUser.objects.filter(email=email).exists()
-        if not exist_email:
-            raise ValueError('email not found')
-        user = authenticate(email=email, password=password)
-        if user is not None:
-            refresh = RefreshToken.for_user(user)
-            # (refresh)
-            new_access_token = refresh.access_token
-            new_access_token.set_exp(lifetime=timedelta(seconds=30))
-            if not user.email_verified:
-                raise ValueError(_('email has not yet been verified'))
-            return {
-                'email_verified': user.email_verified,
-                'refresh': str(refresh),
-                'access': str(new_access_token),
-            }
-        else:
-            raise ValueError('User or password incorrect')
-
     def send_email_confirmation(self):
+        """ Method to send the email confirmation """
         try:
             token = AccessToken.for_user(self)
             token.set_exp(lifetime=timedelta(days=30))
-            print(token)
             Email.send_confirmation_register(self, token)
         except Exception as ex:
-            raise ex
+            raise Exception from ex
 
     def validate_email(self):
         self.email_verified = True
