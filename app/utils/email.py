@@ -16,14 +16,14 @@ class Email:
         self.custom_html_message = custom_message_html
 
     @classmethod
-    def send_confirmation_register(cls, user):
+    def send_confirmation_register(cls, user, token):
         subject = CONFIRMATION_EMAIL_MESSAGE
         message = ""
         message_html = loader.render_to_string(
             'ConfirmationEmail.html',
             {
                 'user_name': user.first_name + " " + user.last_name,
-                'token': user.token_confirmation_email
+                'token': token
             }
         )
         email = Email(subject, message, user.email, message_html)

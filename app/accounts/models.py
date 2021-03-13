@@ -4,8 +4,9 @@ from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth import authenticate
 from django.utils.translation import ugettext_lazy as _
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 from utils.email import Email
+from datetime import timedelta
 
 
 class CustomUserManager(BaseUserManager):
@@ -69,18 +70,24 @@ class CustomUser(AbstractUser):
         user = authenticate(email=email, password=password)
         if user is not None:
             refresh = RefreshToken.for_user(user)
+            # (refresh)
+            new_access_token = refresh.access_token
+            new_access_token.set_exp(lifetime=timedelta(seconds=30))
             if not user.email_verified:
                 raise ValueError(_('email has not yet been verified'))
             return {
                 'email_verified': user.email_verified,
                 'refresh': str(refresh),
-                'access': str(refresh.access_token),
+                'access': str(new_access_token),
             }
         else:
             raise ValueError('User or password incorrect')
 
     def send_email_confirmation(self):
         try:
-            Email.send_confirmation_register(self)
+            token = AccessToken.for_user(self)
+            token.set_exp(lifetime=timedelta(days=30))
+            print(token)
+            Email.send_confirmation_register(self, token)
         except Exception as ex:
             raise ex
