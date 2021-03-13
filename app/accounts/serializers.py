@@ -26,10 +26,9 @@ class LoginSerializer(serializers.ModelSerializer):
             )
             return user_tokens
         except ValueError as error:
-            raise serializers.ValidationError({"error": error})
+            raise serializers.ValidationError({"value_error": error})
         except Exception as error:
-            print(error)
-            raise serializers.ValidationError({"error": error})
+            raise serializers.ValidationError({"email_not_verified": error})
 
 
 class UserSerializer(serializers.ModelSerializer):

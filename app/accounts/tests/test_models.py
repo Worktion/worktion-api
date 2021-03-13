@@ -60,7 +60,7 @@ class AuthenticationUserTestCase(TestCase):
         with self.assertRaises(ValueError)as ex:
             CustomUser.objects.login("worktion@gmail.com", "xdccd")
         self.assertEqual(str(ex.exception), 'User or password incorrect')
-        with self.assertRaises(ValueError)as ex:
+        with self.assertRaises(Exception)as ex:
             CustomUser.objects.login("worktion@gmail.com", "strongpass")
         self.assertEqual(str(ex.exception), 'email has not yet been verified')
 
