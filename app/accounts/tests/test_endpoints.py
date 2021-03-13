@@ -87,5 +87,4 @@ class AccountTestCase(APITestCase):
             "username": "new",
         }
         response = client.patch('/api/users/1/', data, format='json')
-        print(response.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)

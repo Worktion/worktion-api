@@ -1,9 +1,11 @@
+import uuid
 from django.db import models
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth import authenticate
 from django.utils.translation import ugettext_lazy as _
 from rest_framework_simplejwt.tokens import RefreshToken
+from utils.email import Email
 
 
 class CustomUserManager(BaseUserManager):
@@ -20,6 +22,7 @@ class CustomUserManager(BaseUserManager):
         )
         user.set_password(password)
         user.save()
+        user.send_email_confirmation()
         return user
 
     def create_superuser(self, email, password, first_name, last_name, username, **extra_fields):
@@ -46,6 +49,7 @@ class CustomUser(AbstractUser):
     birth_date = models.DateField(_('user birthday'), blank=True, null=True)
     cover = models.ImageField(upload_to='users-cover', null=True, blank=True)
     email_verified = models.BooleanField(default=False)
+    token_confirmation_email = models.UUIDField(default=uuid.uuid4, blank=True, null=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name', 'username']
@@ -53,7 +57,7 @@ class CustomUser(AbstractUser):
     objects = CustomUserManager()
 
     @classmethod
-    def login(self, email, password):
+    def login(cls, email, password):
         """ Method to get access to the system """
         if not email:
             raise ValueError('The email must be set')
@@ -74,3 +78,9 @@ class CustomUser(AbstractUser):
             }
         else:
             raise ValueError('User or password incorrect')
+
+    def send_email_confirmation(self):
+        try:
+            Email.send_confirmation_register(self)
+        except Exception as ex:
+            raise ex
