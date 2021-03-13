@@ -66,6 +66,20 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
 
+class ConfirmEmailSerializer(serializers.ModelSerializer):
+    """ Serializer to confirm the email """
+    email_verified = serializers.BooleanField(read_only=True)
+
+    class Meta:
+        model = User
+        fields = ['email_verified']
+
+    def create(self, validated_data):
+        user = self.context['request'].user
+        user.validate_email()
+        return user
+
+
 class ProfileSerializer(serializers.ModelSerializer):
     """ Serializer to the User Profile """
 

@@ -91,3 +91,7 @@ class CustomUser(AbstractUser):
             Email.send_confirmation_register(self, token)
         except Exception as ex:
             raise ex
+
+    def validate_email(self):
+        self.email_verified = True
+        self.save()

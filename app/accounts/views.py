@@ -7,6 +7,7 @@ from .serializers import (
     ProfileSerializer,
     PublicProfileSerializer,
     LoginSerializer,
+    ConfirmEmailSerializer,
 )
 from .permissions import IsOwnerOrReadOnly
 User = get_user_model()
@@ -22,6 +23,13 @@ class RegisterUser(generics.CreateAPIView):
     """ View to register new Users """
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+
+class ConfirmEmailView(generics.CreateAPIView):
+    """View to confirm email of user """
+    queryset = User.objects.all()
+    serializer_class = ConfirmEmailSerializer
+    permission_classes = [IsAuthenticated]
 
 
 class UserList(generics.ListAPIView):
