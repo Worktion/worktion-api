@@ -57,7 +57,7 @@ class CustomUserManager(BaseUserManager):
         if user is not None:
             refresh = RefreshToken.for_user(user)
             new_access_token = refresh.access_token
-            new_access_token.set_exp(lifetime=timedelta(seconds=30))
+            new_access_token.set_exp(lifetime=timedelta(minutes=30))
             if not user.email_verified:
                 raise Exception(_('email has not yet been verified'))
             return {
