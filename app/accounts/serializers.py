@@ -31,6 +31,58 @@ class LoginSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"email_not_verified": error})
 
 
+class RecoverPasswordSerializer(serializers.Serializer):
+    email = serializers.EmailField(
+        required=True,
+        write_only=True,
+    )
+
+    def create(self, validated_data):
+        user = User.objects.filter(email=validated_data['email']).first()
+        user.send_email_recover_password()
+        return user
+
+    def validate_email(self, email):
+        """ Validation if email is in a account """
+        exist_email = User.objects.filter(email=email).exists()
+        if not exist_email:
+            raise serializers.ValidationError("User not found with the input email")
+        return email
+
+
+class ValidateCodeRecoverPasswordSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True, write_only=True)
+    code = serializers.IntegerField(required=True, write_only=True)
+    access_token = serializers.CharField(read_only=True)
+
+    def create(self, validated_data):
+        user = User.objects.filter(email=validated_data['email']).first()
+        try:
+            token = user.validate_code_recover_pass(validated_data['code'])
+            return {
+                'access_token': str(token)
+            }
+        except Exception as ex:
+            raise serializers.ValidationError(ex)
+
+    def validate_email(self, email):
+        """ Validation if email is in a account """
+        exist_email = User.objects.filter(email=email).exists()
+        if not exist_email:
+            raise serializers.ValidationError("User not found with the input email")
+        return email
+
+
+class UpdatePasswordSerializer(serializers.Serializer):
+    password = serializers.CharField(
+        max_length=65, min_length=8, write_only=True)
+
+    def create(self, validated_data):
+        user = self.context['request'].user
+        user.update_password(validated_data['password'])
+        return True
+
+
 class UserSerializer(serializers.ModelSerializer):
     """ Serializer of model CustomUser  """
     password = serializers.CharField(

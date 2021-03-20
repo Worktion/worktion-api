@@ -8,6 +8,9 @@ from .serializers import (
     PublicProfileSerializer,
     LoginSerializer,
     ConfirmEmailSerializer,
+    RecoverPasswordSerializer,
+    ValidateCodeRecoverPasswordSerializer,
+    UpdatePasswordSerializer,
 )
 from .permissions import IsOwnerOrReadOnly
 User = get_user_model()
@@ -29,6 +32,25 @@ class ConfirmEmailView(generics.CreateAPIView):
     """View to confirm email of user """
     queryset = User.objects.all()
     serializer_class = ConfirmEmailSerializer
+    permission_classes = [IsAuthenticated]
+
+
+class RecoverPassword(generics.CreateAPIView):
+    """ View to recover the password of a user """
+    queryset = User.objects.all()
+    serializer_class = RecoverPasswordSerializer
+
+
+class ValidateCodeRecoverPassword(generics.CreateAPIView):
+    """ View to validate the code to reset the password """
+    queryset = User.objects.all()
+    serializer_class = ValidateCodeRecoverPasswordSerializer
+
+
+class UpdatePassword(generics.CreateAPIView):
+    """ View to update the the user's password """
+    queryset = User.objects.all()
+    serializer_class = UpdatePasswordSerializer
     permission_classes = [IsAuthenticated]
 
 

@@ -1,8 +1,9 @@
 """"
 Author: Victor Manuel Niño Martínez
-Last update: 13/03/2021
+Last update: 20/03/2021
 """
 import uuid
+import random
 from datetime import timedelta
 from django.db import models
 from django.contrib.auth.base_user import BaseUserManager
@@ -81,6 +82,7 @@ class CustomUser(AbstractUser):
     cover = models.ImageField(upload_to='users-cover', null=True, blank=True)
     email_verified = models.BooleanField(default=False)
     token_confirmation_email = models.UUIDField(default=uuid.uuid4, blank=True, null=True)
+    code_recover_password = models.IntegerField(null=True, blank=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name', 'username']
@@ -96,6 +98,28 @@ class CustomUser(AbstractUser):
         except Exception as ex:
             raise Exception from ex
 
+    def send_email_recover_password(self):
+        """ Method to send the email to recover password """
+        code = random.randint(1000000, 9999999)
+        self.code_recover_password = code
+        self.save()
+        try:
+            Email.send_recover_password(self)
+        except Exception as ex:
+            raise Exception from ex
+
     def validate_email(self):
         self.email_verified = True
+        self.save()
+
+    def validate_code_recover_pass(self, code):
+        if self.code_recover_password != int(code):
+            raise Exception("Codes do not match ")
+        token = AccessToken.for_user(self)
+        token.set_exp(lifetime=timedelta(minutes=30))
+        return token
+
+    def update_password(self, new_password):
+        self.set_password(new_password)
+        self.code_recover_password = None
         self.save()
