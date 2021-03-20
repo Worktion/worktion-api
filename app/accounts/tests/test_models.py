@@ -67,3 +67,19 @@ class AuthenticationUserTestCase(TestCase):
     def test_login_user_good_credentials(self):
         self.user.validate_email()
         self.assertIsNotNone(CustomUser.objects.login("worktion@gmail.com", "strongpass"))
+
+    def test_update_password(self):
+        new_password = "new_password"
+        self.user.validate_email()
+        self.user.update_password(new_password)
+        self.assertIsNotNone(CustomUser.objects.login("worktion@gmail.com", new_password))
+
+    def test_validate_code_recover_pass_not_match(self):
+        self.user.code_recover_password = 12345
+        self.user.save()
+        self.assertRaises(Exception, self.user.validate_code_recover_pass, "123")
+
+    def test_validate_code_recover_pass_match(self):
+        self.user.code_recover_password = 12345
+        self.user.save()
+        self.assertIsNotNone(self.user.validate_code_recover_pass(12345))
