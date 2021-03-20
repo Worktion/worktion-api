@@ -101,18 +101,19 @@ class AuthenticationTestCase(APITestCase):
 
 class AccountTestCase(APITestCase):
     def setUp(self):
-        User.objects.create_user(
+        self.user = User.objects.create_user(
             'test@a.com',
             '12345678',
             'test',
             'test',
             'test'
         )
-        url = reverse('token_obtain_pair')
+        url = reverse('login_account')
         data = {
             "email": "test@a.com",
             "password": "12345678"
         }
+        self.user.validate_email()
         response = self.client.post(url, data, format='json')
         self.token = response.data['access']
 
@@ -120,7 +121,7 @@ class AccountTestCase(APITestCase):
         client = APIClient()
         client.credentials(
             HTTP_AUTHORIZATION='Bearer ' + self.token)
-        response = client.get('/api/users/1/')
+        response = client.get('/api/users/{0}/'.format(self.user.id))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_account_detail_put(self):
@@ -131,5 +132,5 @@ class AccountTestCase(APITestCase):
         data = {
             "username": "new",
         }
-        response = client.patch('/api/users/1/', data, format='json')
+        response = client.patch('/api/users/{0}/'.format(self.user.id), data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
