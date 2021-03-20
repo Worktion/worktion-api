@@ -4,6 +4,7 @@ Creation: 12/03/2021
 Last update: 20/03/2021
 """
 from smtplib import SMTPException
+import os
 from django.core.mail import send_mail
 from django.template import loader
 from app.settings import EMAIL_HOST_USER
@@ -31,6 +32,7 @@ class Email:
             'ConfirmationEmail.html',
             {
                 'user_name': user.first_name + " " + user.last_name,
+                'base_url': os.environ.get("BASE_URL_WEB_CLIENT", "http://localhost:3000"),
                 'token': token
             }
         )
